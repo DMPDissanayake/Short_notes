@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:short_notes/Utils/constant.dart';
+import 'package:short_notes/Utils/routers.dart';
 import 'package:short_notes/Utils/text_style.dart';
 import 'package:short_notes/Widgets/nots_todo_crad.dart';
 import 'package:short_notes/Widgets/progress_card.dart';
@@ -38,15 +39,25 @@ class _HomeState extends State<Home> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                NotsTodoCrad(
-                  icon: Icons.bookmark_add_outlined,
-                  title: 'Notes',
-                  description: '3 Notes',
+                GestureDetector(
+                  onTap: () {
+                    AppRouter.router.push("/notes");
+                  },
+                  child: NotsTodoCrad(
+                    icon: Icons.bookmark_add_outlined,
+                    title: 'Notes',
+                    description: '3 Notes',
+                  ),
                 ),
-                NotsTodoCrad(
-                  icon: Icons.today_outlined,
-                  title: 'To-Do List',
-                  description: '3 Tasks',
+                GestureDetector(
+                  onTap: () {
+                    AppRouter.router.push("/todos");
+                  },
+                  child: NotsTodoCrad(
+                    icon: Icons.today_outlined,
+                    title: 'To-Do List',
+                    description: '3 Tasks',
+                  ),
                 ),
               ],
             ),

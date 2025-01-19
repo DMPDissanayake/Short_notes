@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:short_notes/Pages/home.dart';
 import 'package:short_notes/Pages/note_page.dart';
+import 'package:short_notes/Pages/notes_by_catagory.dart';
 import 'package:short_notes/Pages/todo_page.dart';
 
 class AppRouter {
@@ -33,6 +34,14 @@ class AppRouter {
           return ToDoPapp();
         },
       ),
+      //note catagory page
+      GoRoute(
+        path: "/catagory",
+        builder: (context, state) {
+          final String catagory = state.extra as String;
+          return NotesByCatagory(catagory: catagory);
+        },
+      )
     ],
   );
 }

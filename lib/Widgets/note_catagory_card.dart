@@ -8,6 +8,7 @@ class NoteCatagoryCard extends StatelessWidget {
 
   final Future Function() editNote;
   final Future Function() removeNote;
+  final Future Function() viewSingel;
 
   const NoteCatagoryCard({
     super.key,
@@ -15,6 +16,7 @@ class NoteCatagoryCard extends StatelessWidget {
     required this.description,
     required this.editNote,
     required this.removeNote,
+    required this.viewSingel,
   });
 
   @override
@@ -50,20 +52,27 @@ class NoteCatagoryCard extends StatelessWidget {
                 ),
               ],
             ),
-            Text(
-              title,
-              maxLines: 1, // Limits text to a single line
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.appSubtitle,
-            ),
-            Text(
-              description,
-              maxLines: 5, // Limits text to a 5
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.appDescriptionSmall.copyWith(
-                color: AppColors.kWhiteColor.withOpacity(0.5),
+            GestureDetector(
+              onTap: viewSingel,
+              child: Column(
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1, // Limits text to a single line
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.appSubtitle,
+                  ),
+                  Text(
+                    description,
+                    maxLines: 5, // Limits text to a 5
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.appDescriptionSmall.copyWith(
+                      color: AppColors.kWhiteColor.withOpacity(0.5),
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ],
               ),
-              textAlign: TextAlign.left,
             ),
           ],
         ),

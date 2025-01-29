@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:short_notes/Models/note_model.dart';
+import 'package:short_notes/Services/note_service.dart';
 import 'package:short_notes/Utils/constant.dart';
 import 'package:short_notes/Utils/routers.dart';
 import 'package:short_notes/Utils/text_style.dart';
@@ -13,6 +15,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final NotService notService = NotService();
+  List<Note> allNote = [];
+
+  //load list
+  Future<void> _loadNotes() async {
+    final List<Note> loadedNote = await notService.loadNotes();
+    setState(() {
+      allNote = loadedNote;
+    });
+  }
+
+  @override
+  void initState() {
+    _loadNotes();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +65,7 @@ class _HomeState extends State<Home> {
                   child: NotsTodoCrad(
                     icon: Icons.bookmark_add_outlined,
                     title: 'Notes',
-                    description: '3 Notes',
+                    description: allNote.length.toString(),
                   ),
                 ),
                 GestureDetector(

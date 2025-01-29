@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:short_notes/Helpers/snacbar.dart';
+import 'package:short_notes/Models/note_model.dart';
 import 'package:short_notes/Services/note_service.dart';
 import 'package:short_notes/Utils/colors.dart';
 import 'package:short_notes/Utils/routers.dart';
 import 'package:short_notes/Utils/text_style.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateNote extends StatefulWidget {
   final bool isNewNote;
@@ -37,6 +40,7 @@ class _CreateNoteState extends State<CreateNote> {
   final _formkey = GlobalKey<FormState>();
   //form controller
   final TextEditingController _catagotryController = TextEditingController();
+  String? _selectCatagory;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
@@ -62,7 +66,37 @@ class _CreateNoteState extends State<CreateNote> {
         width: 130.0,
         height: 56.0,
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            if (_formkey.currentState!.validate()) {
+              try {
+                noteService.addnote(
+                  Note(
+                    title: _titleController.text,
+                    category: widget.isNewNote
+                        ? _catagotryController.text
+                        : _selectCatagory!,
+                    content: _contentController.text,
+                    date: DateTime.now(),
+                    id: Uuid().v4(),
+                  ),
+                );
+
+                //Show the snacbar
+                AppHelpers.showSnackBar(context, "Not Save Successfull!");
+
+                //Set Routs and filed clearn
+
+                _titleController.clear();
+                _contentController.clear();
+
+                AppRouter.router.go("/notes");
+              } catch (e) {
+                print(e.toString());
+                //Show the snacbar
+                AppHelpers.showSnackBar(context, "Not Not Save Successfull!");
+              }
+            }
+          },
           child: Text(
             "Save Note",
             style: AppTextStyles.appDescription,
@@ -85,6 +119,12 @@ class _CreateNoteState extends State<CreateNote> {
                       widget.isNewNote
                           ? TextFormField(
                               controller: _catagotryController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a category';
+                                }
+                                return null;
+                              },
                               style: TextStyle(
                                 color: AppColors.kWhiteColor,
                                 fontSize: 18,
@@ -95,11 +135,18 @@ class _CreateNoteState extends State<CreateNote> {
                                   fontSize: 20,
                                   color: AppColors.kWhiteColor.withOpacity(0.4),
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(50),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                   borderSide: BorderSide(
                                     color:
                                         AppColors.kWhiteColor.withOpacity(0.4),
+                                    width: 2.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: BorderSide(
+                                    color: AppColors.kWhiteColor,
                                     width: 2.0,
                                   ),
                                 ),
@@ -109,7 +156,13 @@ class _CreateNoteState extends State<CreateNote> {
                               ),
                             )
                           : DropdownButtonFormField<String>(
-                              value: null,
+                              value: _selectCatagory,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please select a category';
+                                }
+                                return null;
+                              },
                               hint: Text(
                                 'Select Category',
                                 style: TextStyle(
@@ -125,7 +178,7 @@ class _CreateNoteState extends State<CreateNote> {
                               }).toList(),
                               onChanged: (newValue) {
                                 setState(() {
-                                  // Handle category selection
+                                  _selectCatagory = newValue!;
                                 });
                               },
                               dropdownColor: AppColors.kCardColor,
@@ -168,9 +221,15 @@ class _CreateNoteState extends State<CreateNote> {
                       //title
                       TextFormField(
                         controller: _titleController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter a titel";
+                          }
+                          return null;
+                        },
                         style: TextStyle(
                           color: AppColors.kWhiteColor,
-                          fontSize: 18,
+                          fontSize: 40,
                         ),
                         maxLines: 2,
                         cursorColor: AppColors.kWhiteColor.withOpacity(0.4),
@@ -192,6 +251,12 @@ class _CreateNoteState extends State<CreateNote> {
                       //container
                       TextFormField(
                         controller: _contentController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter content';
+                          }
+                          return null;
+                        },
                         style: TextStyle(
                           color: AppColors.kWhiteColor,
                           fontSize: 18,

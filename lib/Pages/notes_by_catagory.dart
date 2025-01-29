@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:short_notes/Helpers/snacbar.dart';
 import 'package:short_notes/Models/note_model.dart';
 import 'package:short_notes/Services/note_service.dart';
 import 'package:short_notes/Utils/colors.dart';
@@ -36,11 +37,20 @@ class _NotesByCatagoryState extends State<NotesByCatagory> {
 
   //Edite
   void _editNotes(Note note) {
-    //navigate to the edit note page
+    //Naviget the edit page
+    AppRouter.router.push("/edit-note", extra: note);
   }
 
-  //Delete Note
-  Future<void> _removeNotes(String id) async {}
+  //Delete note
+  Future<void> _removeNotes(String id) async {
+    try {
+      await notService.deleteNotes(id);
+      AppHelpers.showSnackBar(context, "Note Delete Successfull!");
+    } catch (e) {
+      print(e.toString());
+      AppHelpers.showSnackBar(context, "Note Not Delete Successfull!");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +97,19 @@ class _NotesByCatagoryState extends State<NotesByCatagory> {
                   return NoteCatagoryCard(
                     title: noteList[index].title,
                     description: noteList[index].content,
-                    editNote: () async {},
-                    removeNote: () async {},
+                    editNote: () async {
+                      _editNotes(noteList[index]);
+                    },
+                    removeNote: () async {
+                      await _removeNotes(noteList[index].id);
+                      _loadNotesByCatagory();
+                    },
+                    viewSingel: () async {
+                      AppRouter.router.go(
+                        "/singel-note",
+                        extra: noteList[index],
+                      );
+                    },
                   );
                 },
               ),

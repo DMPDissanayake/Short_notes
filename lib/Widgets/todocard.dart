@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:short_notes/Models/todo_model.dart';
 import 'package:short_notes/Utils/colors.dart';
 import 'package:short_notes/Utils/text_style.dart';
@@ -7,10 +6,12 @@ import 'package:short_notes/Utils/text_style.dart';
 class TodoCard extends StatefulWidget {
   final Todo toDo;
   final bool completed;
+  final Function() checkBox;
   const TodoCard({
     super.key,
     required this.toDo,
     required this.completed,
+    required this.checkBox,
   });
 
   @override
@@ -18,10 +19,6 @@ class TodoCard extends StatefulWidget {
 }
 
 class _TodoCardState extends State<TodoCard> {
-  //chekbox
-  // bool _chekbox = false;
-  //SetDateTime
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,13 +33,16 @@ class _TodoCardState extends State<TodoCard> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
                   widget.toDo.title,
-                  style: AppTextStyles.appSubtitle,
+                  style: AppTextStyles.appSubtitle.copyWith(
+                    fontSize: 20,
+                  ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
                       ("${widget.toDo.date.day}/${widget.toDo.date.month}/${widget.toDo.date.year}"),
@@ -67,9 +67,7 @@ class _TodoCardState extends State<TodoCard> {
             ),
             Checkbox(
               value: widget.completed,
-              onChanged: (bool? value) {
-                setState(() {});
-              },
+              onChanged: (value) => widget.checkBox(),
             )
           ],
         ));

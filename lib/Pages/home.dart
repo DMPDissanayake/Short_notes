@@ -65,7 +65,7 @@ class _HomeState extends State<Home> {
                   child: NotsTodoCrad(
                     icon: Icons.bookmark_add_outlined,
                     title: 'Notes',
-                    description: allNote.length.toString(),
+                    description: "${allNote.length.toString()} Notes",
                   ),
                 ),
                 GestureDetector(

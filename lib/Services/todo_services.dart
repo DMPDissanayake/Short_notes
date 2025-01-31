@@ -7,7 +7,7 @@ class TodoServices {
       title: "Read a Book",
       date: DateTime.now(),
       time: DateTime.now(),
-      isDone: true,
+      isDone: false,
     ),
     Todo(
       title: "Go for a Walk",
@@ -19,7 +19,7 @@ class TodoServices {
       title: "Complete Assignment",
       date: DateTime.now(),
       time: DateTime.now(),
-      isDone: false,
+      isDone: true,
     ),
   ];
 
@@ -41,9 +41,33 @@ class TodoServices {
   //List Load
   Future<List<Todo>> loadNotes() async {
     final dynamic todos = await _myBox.get("todos");
-    if (todos != null && todos is List<Todo>) {
+    if (todos != null && todos is List<dynamic>) {
       return todos.cast<Todo>().toList();
     }
     return [];
+  }
+
+  //check box
+  Future<void> checkBok(Todo todo) async {
+    try {
+      final dynamic todolist = await _myBox.get("todos");
+      final int index = todolist.indexWhere((test) => test.id == todo.id);
+      todolist[index] = todo;
+
+      await _myBox.put("todos", todolist);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  //Add the new TodoTask
+  Future<void> addNewTask(Todo todo) async {
+    try {
+      final dynamic todolist = await _myBox.get("todos");
+      todolist.add(todo);
+      await _myBox.put("todos", todolist);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

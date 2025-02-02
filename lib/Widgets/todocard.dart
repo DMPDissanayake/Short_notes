@@ -33,7 +33,7 @@ class _TodoCardState extends State<TodoCard> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   widget.toDo.title,
@@ -42,7 +42,7 @@ class _TodoCardState extends State<TodoCard> {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       ("${widget.toDo.date.day}/${widget.toDo.date.month}/${widget.toDo.date.year}"),
@@ -68,6 +68,7 @@ class _TodoCardState extends State<TodoCard> {
             Checkbox(
               value: widget.completed,
               onChanged: (value) => widget.checkBox(),
+              activeColor: AppColors.kFabColor,
             )
           ],
         ));

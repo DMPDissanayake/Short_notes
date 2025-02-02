@@ -50,7 +50,7 @@ class _ToDoPappState extends State<ToDoPapp>
 
 //loaded the todo lits
   Future<void> _loadedTodoList() async {
-    final List<Todo> todoList = await todoServices.loadNotes();
+    final List<Todo> todoList = await todoServices.loadTodo();
     print(allTodoList.length);
     setState(() {
       //Set All todo
@@ -79,7 +79,7 @@ class _ToDoPappState extends State<ToDoPapp>
         });
         //appsnacbar
         AppHelpers.showSnackBar(context, "Task is Added");
-        AppRouter.router.push("/todos");
+        Navigator.pop(context);
         print("done");
       } catch (e) {
         print(e.toString());
@@ -185,6 +185,15 @@ class _ToDoPappState extends State<ToDoPapp>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_sharp,
+            color: AppColors.kWhiteColor,
+          ),
+          onPressed: () {
+            AppRouter.router.go("/");
+          },
+        ),
         bottom: TabBar(
           controller: _tabController,
           tabs: [

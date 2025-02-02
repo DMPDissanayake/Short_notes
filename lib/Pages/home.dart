@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:short_notes/Models/note_model.dart';
+import 'package:short_notes/Models/todo_model.dart';
 import 'package:short_notes/Services/note_service.dart';
+import 'package:short_notes/Services/todo_services.dart';
 import 'package:short_notes/Utils/constant.dart';
 import 'package:short_notes/Utils/routers.dart';
 import 'package:short_notes/Utils/text_style.dart';
+import 'package:short_notes/Widgets/home_Card.dart';
 import 'package:short_notes/Widgets/nots_todo_crad.dart';
 import 'package:short_notes/Widgets/progress_card.dart';
 
@@ -16,9 +19,23 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final NotService notService = NotService();
+  final TodoServices todoServices = TodoServices();
   List<Note> allNote = [];
+  List<Todo> allTodo = [];
 
-  //load list
+  //Check the new user
+  void _isNewUser() async {
+    final bool isNewUser =
+        await notService.isNewUser() || await TodoServices().isNewUser();
+    if (isNewUser) {
+      await notService.createInitialNotes();
+      await todoServices.createInitialToDo();
+    }
+    _loadNotes();
+    _loadTodos();
+  }
+
+  //load note list
   Future<void> _loadNotes() async {
     final List<Note> loadedNote = await notService.loadNotes();
     setState(() {
@@ -26,9 +43,17 @@ class _HomeState extends State<Home> {
     });
   }
 
+  //load Todos list
+  Future<void> _loadTodos() async {
+    final List<Todo> loadedTodo = await todoServices.loadTodo();
+    setState(() {
+      allTodo = loadedTodo;
+    });
+  }
+
   @override
   void initState() {
-    _loadNotes();
+    _isNewUser();
     super.initState();
   }
 
@@ -49,8 +74,8 @@ class _HomeState extends State<Home> {
               height: AppConstants.kDefaultPadding,
             ),
             ProgressCard(
-              completTask: 3,
-              totalCompletTask: 5,
+              completTask: allTodo.where((test) => test.isDone).length,
+              totalCompletTask: allTodo.length,
             ),
             SizedBox(
               height: AppConstants.kDefaultPadding * 1.5,
@@ -75,7 +100,7 @@ class _HomeState extends State<Home> {
                   child: NotsTodoCrad(
                     icon: Icons.today_outlined,
                     title: 'To-Do List',
-                    description: '3 Tasks',
+                    description: "${allTodo.length.toString()} Notes",
                   ),
                 ),
               ],
@@ -95,7 +120,23 @@ class _HomeState extends State<Home> {
                   style: AppTextStyles.appSubtitle,
                 )
               ],
-            )
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Expanded(
+                child: ListView.builder(
+              itemCount: allTodo.length,
+              itemBuilder: (context, index) {
+                final Todo todo = allTodo[index];
+                return HomeCard(
+                  title: todo.title,
+                  data: todo.date.toString(),
+                  time: todo.date.toString(),
+                  isDone: todo.isDone,
+                );
+              },
+            ))
           ],
         ),
       ),

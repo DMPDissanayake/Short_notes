@@ -11,7 +11,7 @@ class AppHelpers {
           message,
           style: AppTextStyles.appButton,
         ),
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 1),
       ),
     );
   }

@@ -62,11 +62,24 @@ class _CompletedBarState extends State<CompletedBar> {
               child: ListView.builder(
             itemCount: widget.completedTodoList.length,
             itemBuilder: (context, index) {
-              return TodoCard(
-                toDo: widget.completedTodoList[index],
-                completed: widget.completedTodoList[index].isDone,
-                checkBox: () =>
-                    _markUnTododone(widget.completedTodoList[index]),
+              return Dismissible(
+                key: Key(widget.completedTodoList[index].id.toString()),
+                onDismissed: (direction) {
+                  // Store the item before removal
+                  final Todo dismissedTodo = widget.completedTodoList[index];
+                  setState(() {
+                    widget.completedTodoList.removeAt(index);
+                  });
+                  // Delete the task after updating the list
+                  TodoServices().deleteTodo(dismissedTodo);
+                  AppHelpers.showSnackBar(context, "Task is Deleted!");
+                },
+                child: TodoCard(
+                  toDo: widget.completedTodoList[index],
+                  completed: widget.completedTodoList[index].isDone,
+                  checkBox: () =>
+                      _markUnTododone(widget.completedTodoList[index]),
+                ),
               );
             },
           ))

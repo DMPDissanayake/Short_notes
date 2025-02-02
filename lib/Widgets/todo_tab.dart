@@ -64,11 +64,25 @@ class _TodoTabState extends State<TodoTab> {
               child: ListView.builder(
             itemCount: widget.incompletedTodoList.length,
             itemBuilder: (context, index) {
-              return TodoCard(
-                toDo: widget.incompletedTodoList[index],
-                completed: widget.incompletedTodoList[index].isDone,
-                checkBox: () =>
-                    _markTododone(widget.incompletedTodoList[index]),
+              return Dismissible(
+                key: Key(widget.incompletedTodoList[index].id.toString()),
+                onDismissed: (direction) {
+                  // Store the item before removal
+                  final Todo dismissedTodo = widget.incompletedTodoList[index];
+                  setState(() {
+                    widget.incompletedTodoList.removeAt(index);
+                  });
+                  // Delete the task after updating the list
+                  TodoServices().deleteTodo(dismissedTodo);
+
+                  AppHelpers.showSnackBar(context, "Task is Deleted!");
+                },
+                child: TodoCard(
+                  toDo: widget.incompletedTodoList[index],
+                  completed: widget.incompletedTodoList[index].isDone,
+                  checkBox: () =>
+                      _markTododone(widget.incompletedTodoList[index]),
+                ),
               );
             },
           ))

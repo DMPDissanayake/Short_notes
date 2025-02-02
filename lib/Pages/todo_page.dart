@@ -79,6 +79,8 @@ class _ToDoPappState extends State<ToDoPapp>
         });
         //appsnacbar
         AppHelpers.showSnackBar(context, "Task is Added");
+        //clear the text filed
+        _todoControler.clear();
         Navigator.pop(context);
         print("done");
       } catch (e) {

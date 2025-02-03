@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:short_notes/Models/note_model.dart';
 import 'package:short_notes/Models/todo_model.dart';
+import 'package:short_notes/Pages/todo_data.dart';
 import 'package:short_notes/Services/note_service.dart';
 import 'package:short_notes/Services/todo_services.dart';
+import 'package:short_notes/Utils/colors.dart';
 import 'package:short_notes/Utils/constant.dart';
 import 'package:short_notes/Utils/routers.dart';
 import 'package:short_notes/Utils/text_style.dart';
@@ -59,85 +61,122 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "NoteSphere",
-          style: AppTextStyles.appTitle,
+    return TodoData(
+      todos: allTodo,
+      onTodosChanged: (todos) {
+        setState(() {
+          allTodo = todos;
+        });
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "NoteSphere",
+            style: AppTextStyles.appTitle,
+          ),
         ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(8),
-        child: Column(
-          children: [
-            SizedBox(
-              height: AppConstants.kDefaultPadding,
-            ),
-            ProgressCard(
-              completTask: allTodo.where((test) => test.isDone).length,
-              totalCompletTask: allTodo.length,
-            ),
-            SizedBox(
-              height: AppConstants.kDefaultPadding * 1.5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    AppRouter.router.push("/notes");
-                  },
-                  child: NotsTodoCrad(
-                    icon: Icons.bookmark_add_outlined,
-                    title: 'Notes',
-                    description: "${allNote.length.toString()} Notes",
+        body: Padding(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              SizedBox(
+                height: AppConstants.kDefaultPadding,
+              ),
+              ProgressCard(
+                completTask: allTodo.where((test) => test.isDone).length,
+                totalCompletTask: allTodo.length,
+              ),
+              SizedBox(
+                height: AppConstants.kDefaultPadding * 1.5,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      AppRouter.router.push("/notes");
+                    },
+                    child: NotsTodoCrad(
+                      icon: Icons.bookmark_add_outlined,
+                      title: 'Notes',
+                      description: "${allNote.length.toString()} Notes",
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    AppRouter.router.push("/todos");
-                  },
-                  child: NotsTodoCrad(
-                    icon: Icons.today_outlined,
-                    title: 'To-Do List',
-                    description: "${allTodo.length.toString()} Notes",
+                  GestureDetector(
+                    onTap: () {
+                      AppRouter.router.push("/todos");
+                    },
+                    child: NotsTodoCrad(
+                      icon: Icons.today_outlined,
+                      title: 'To-Do List',
+                      description: "${allTodo.length.toString()} Notes",
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: AppConstants.kDefaultPadding * 1.5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Today's Progress",
-                  style: AppTextStyles.appSubtitle,
-                ),
-                Text(
-                  "See All",
-                  style: AppTextStyles.appSubtitle,
-                )
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Expanded(
-                child: ListView.builder(
-              itemCount: allTodo.length,
-              itemBuilder: (context, index) {
-                final Todo todo = allTodo[index];
-                return HomeCard(
-                  title: todo.title,
-                  data: todo.date.toString(),
-                  time: todo.date.toString(),
-                  isDone: todo.isDone,
-                );
-              },
-            ))
-          ],
+                ],
+              ),
+              SizedBox(
+                height: AppConstants.kDefaultPadding * 1.5,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Today's Progress",
+                    style: AppTextStyles.appSubtitle,
+                  ),
+                  Text(
+                    "See All",
+                    style: AppTextStyles.appSubtitle,
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              allTodo.isEmpty
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Text(
+                          "Your are not add the Task!!.",
+                          style: AppTextStyles.appSubtitle.copyWith(
+                            fontSize: 18,
+                            color: AppColors.kWhiteColor.withOpacity(0.4),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                              Colors.blue,
+                            ),
+                          ),
+                          onPressed: () {
+                            AppRouter.router.push("/todos");
+                          },
+                          child: const Text("Add Task"),
+                        ),
+                      ],
+                    )
+                  : Expanded(
+                      child: ListView.builder(
+                      itemCount: allTodo.length,
+                      itemBuilder: (context, index) {
+                        final Todo todo = allTodo[index];
+                        return HomeCard(
+                          title: todo.title,
+                          data: todo.date.toString(),
+                          time: todo.date.toString(),
+                          isDone: todo.isDone,
+                        );
+                      },
+                    ))
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:short_notes/Helpers/snacbar.dart';
 import 'package:short_notes/Models/todo_model.dart';
+import 'package:short_notes/Pages/todo_data.dart';
 import 'package:short_notes/Services/todo_services.dart';
 import 'package:short_notes/Utils/constant.dart';
 import 'package:short_notes/Utils/routers.dart';
@@ -25,6 +26,7 @@ class _CompletedBarState extends State<CompletedBar> {
   void _markUnTododone(Todo todo) async {
     try {
       final pastTodo = Todo(
+        id: todo.id,
         title: todo.title,
         date: todo.date,
         time: todo.time,

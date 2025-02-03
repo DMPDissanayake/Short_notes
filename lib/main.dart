@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:short_notes/Models/note_model.dart';
 import 'package:short_notes/Models/todo_model.dart';
+import 'package:short_notes/Pages/todo_data.dart';
 import 'package:short_notes/Utils/routers.dart';
 import 'package:short_notes/Utils/theme_data.dart';
 
@@ -26,15 +27,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: "NoteSphere",
-      theme: ThemeClass.darkTheme.copyWith(
-        textTheme: GoogleFonts.dmSansTextTheme(
-          Theme.of(context).textTheme,
+    return TodoData(
+      todos: [],
+      onTodosChanged: (p0) {},
+      child: MaterialApp.router(
+        title: "NoteSphere",
+        theme: ThemeClass.darkTheme.copyWith(
+          textTheme: GoogleFonts.dmSansTextTheme(
+            Theme.of(context).textTheme,
+          ),
         ),
+        debugShowCheckedModeBanner: false,
+        routerConfig: AppRouter.router,
       ),
-      debugShowCheckedModeBanner: false,
-      routerConfig: AppRouter.router,
     );
   }
 }

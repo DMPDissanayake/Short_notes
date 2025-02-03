@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:short_notes/Helpers/snacbar.dart';
 import 'package:short_notes/Models/todo_model.dart';
+import 'package:short_notes/Pages/todo_data.dart';
 import 'package:short_notes/Services/todo_services.dart';
 import 'package:short_notes/Utils/colors.dart';
 import 'package:short_notes/Utils/routers.dart';
@@ -36,6 +37,7 @@ class _ToDoPappState extends State<ToDoPapp>
   @override
   void dispose() {
     _todoControler.dispose();
+
     super.dispose();
   }
 
@@ -73,10 +75,10 @@ class _ToDoPappState extends State<ToDoPapp>
       );
       try {
         await TodoServices().addNewTask(addNew);
-        setState(() {
-          allTodoList.add(addNew);
-          inCompletedeTodoList.add(addNew);
-        });
+        _loadedTodoList();
+        if (TodoData.of(context) != null) {
+          TodoData.of(context)!.onTodosChanged(allTodoList);
+        }
         //appsnacbar
         AppHelpers.showSnackBar(context, "Task is Added");
         //clear the text filed
@@ -112,9 +114,12 @@ class _ToDoPappState extends State<ToDoPapp>
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                 child: TextFormField(
                   controller: _todoControler,
+                  maxLength: 22, // Limits input to 50 characters
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Please enter a Task";
+                    } else if (value.length > 22) {
+                      return "Task cannot exceed 22 characters";
                     }
                     return null;
                   },

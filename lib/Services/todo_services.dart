@@ -13,7 +13,7 @@ class TodoServices {
       title: "Go for a Walk",
       date: DateTime.now(),
       time: DateTime.now(),
-      isDone: false,
+      isDone: true,
     ),
     Todo(
       title: "Complete Assignment",
@@ -47,16 +47,19 @@ class TodoServices {
     return [];
   }
 
-  //check box
   Future<void> checkBok(Todo todo) async {
     try {
-      final dynamic todolist = await _myBox.get("todos");
-      final int index = todolist.indexWhere((test) => test.id == todo.id);
-      todolist[index] = todo;
+      final List<dynamic>? todolist = await _myBox.get("todos");
 
-      await _myBox.put("todos", todolist);
+      if (todolist != null) {
+        final int index = todolist.indexWhere((test) => test.id == todo.id);
+        if (index != -1) {
+          todolist[index] = todo;
+          await _myBox.put("todos", todolist);
+        }
+      }
     } catch (e) {
-      print(e.toString());
+      print("Error updating task: ${e.toString()}");
     }
   }
 

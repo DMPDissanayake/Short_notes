@@ -67,7 +67,7 @@ class _TodoCardState extends State<TodoCard> {
             ),
             Checkbox(
               value: widget.completed,
-              onChanged: (value) => widget.checkBox(),
+              onChanged: (bool? value) => widget.checkBox(),
               activeColor: AppColors.kFabColor,
             )
           ],
